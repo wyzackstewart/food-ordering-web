@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Food Ordering System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="script" href="main.js">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Admin Panel</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#foodManagement">Manage Foods</a></li>
+                <li><a href="#orderManagement">View Orders</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-panel">
+        <!-- Food Management Section -->
+        <section id="foodManagement" class="management-section">
+            <h2>Food Management</h2>
+            
+            <!-- Add/Edit Food Form -->
+            <div class="food-form">
+                <h3 id="formTitle">Add New Food Item</h3>
+                <form id="foodForm">
+                    <input type="hidden" id="foodId" value="">
+                    <div class="form-group">
+                        <label for="foodName">Food Name</label>
+                        <input type="text" id="foodName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="foodDescription">Description</label>
+                        <textarea id="foodDescription" name="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="foodPrice">Price ($)</label>
+                        <input type="number" id="foodPrice" name="price" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="foodCategory">Category</label>
+                        <select id="foodCategory" name="category_id" required>
+                            <!-- Categories will be loaded by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="foodImage">Image URL (Optional)</label>
+                        <input type="text" id="foodImage" name="image_url" placeholder="https://example.com/image.jpg">
+                    </div>
+                    <button type="submit" class="btn" id="submitFoodBtn">Add Food</button>
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display: none;">Cancel</button>
+                </form>
+            </div>
+
+            <!-- Food List -->
+            <div class="food-list">
+                <h3>Food Items</h3>
+                <div id="adminFoodList">
+                    <!-- Food items will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Management Section -->
+        <section id="orderManagement" class="management-section">
+            <h2>Order Management</h2>
+            <div id="orderList">
+                <!-- Orders will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Food Ordering System Admin Panel - University Assignment</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Admin-specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is admin
+            const user = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            
+            if (user.role !== 'admin') {
+                alert('Access denied. Admin only.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Load admin data
+            loadAdminFoods();
+            loadCategories();
+            loadOrders();
+
+            // Setup event listeners
+            document.getElementById('foodForm').addEventListener('submit', handleFoodFormSubmit);
+            document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+        });
+
+        async function loadAdminFoods() {
+            try {
+                const response = await fetch('php/foods.php?action=getAll');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayAdminFoodList(data.foods);
+                }
+            } catch (error) {
+                console.error('Error loading foods:', error);
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await fetch('php/foods.php?action=getCategories');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const categorySelect = document.getElementById('foodCategory');
+                    categorySelect.innerHTML = '';
+                    
+                    data.categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = category.name;
+                        categorySelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const response = await fetch('php/orders_admin.php?action=getAll');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayOrderList(data.orders);
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+
+        function displayAdminFoodList(foods) {
+            const foodList = document.getElementById('adminFoodList');
+            if (!foodList) return;
+            
+            foodList.innerHTML = '';
+            
+            foods.forEach(food => {
+                const foodItem = document.createElement('div');
+                foodItem.className = 'food-item-admin';
+                foodItem.innerHTML = `
+                    <div class="food-info">
+                        <h4>${food.name}</h4>
+                        <p>${food.description}</p>
+                        <p><strong>Price:</strong> $${food.price}</p>
+                        <p><strong>Category:</strong> ${food.category_name}</p>
+                    </div>
+                    <div class="food-actions">
+                        <button class="btn edit-btn" data-id="${food.id}">Edit</button>
+                        <button class="btn delete-btn" data-id="${food.id}">Delete</button>
+                    </div>
+                `;
+                foodList.appendChild(foodItem);
+            });
+
+            // Add event listeners to buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const foodId = this.getAttribute('data-id');
+                    editFood(foodId);
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const foodId = this.getAttribute('data-id');
+                    deleteFoodAdmin(foodId);
+                });
+            });
+        }
+
+        function displayOrderList(orders) {
+            const orderList = document.getElementById('orderList');
+            if (!orderList) return;
+            
+            orderList.innerHTML = '';
+            
+            orders.forEach(order => {
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item-admin';
+                orderItem.innerHTML = `
+                    <div class="order-info">
+                        <h4>Order #${order.id}</h4>
+                        <p><strong>Customer:</strong> ${order.username}</p>
+                        <p><strong>Total:</strong> $${order.total_price}</p>
+                        <p><strong>Status:</strong> 
+                            <select class="status-select" data-id="${order.id}">
+                                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                                <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                        </p>
+                        <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                    </div>
+                `;
+                orderList.appendChild(orderItem);
+            });
+
+            // Add event listeners for status updates
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const orderId = this.getAttribute('data-id');
+                    const newStatus = this.value;
+                    updateOrderStatus(orderId, newStatus);
+                });
+            });
+        }
+
+        async function editFood(foodId) {
+            try {
+                const response = await fetch(`php/foods.php?action=getById&id=${foodId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const food = data.food;
+                    
+                    // Populate form
+                    document.getElementById('foodId').value = food.id;
+                    document.getElementById('foodName').value = food.name;
+                    document.getElementById('foodDescription').value = food.description;
+                    document.getElementById('foodPrice').value = food.price;
+                    document.getElementById('foodCategory').value = food.category_id;
+                    document.getElementById('foodImage').value = food.image_url || '';
+                    
+                    // Update form title and button
+                    document.getElementById('formTitle').textContent = 'Edit Food Item';
+                    document.getElementById('submitFoodBtn').textContent = 'Update Food';
+                    document.getElementById('cancelEditBtn').style.display = 'inline-block';
+                    
+                    // Scroll to form
+                    document.getElementById('foodForm').scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (error) {
+                console.error('Error loading food:', error);
+            }
+        }
+
+        function cancelEdit() {
+            // Reset form
+            document.getElementById('foodForm').reset();
+            document.getElementById('foodId').value = '';
+            document.getElementById('formTitle').textContent = 'Add New Food Item';
+            document.getElementById('submitFoodBtn').textContent = 'Add Food';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        async function handleFoodFormSubmit(e) {
+            e.preventDefault();
+            
+            const foodId = document.getElementById('foodId').value;
+            const formData = {
+                name: document.getElementById('foodName').value,
+                description: document.getElementById('foodDescription').value,
+                price: parseFloat(document.getElementById('foodPrice').value),
+                category_id: parseInt(document.getElementById('foodCategory').value),
+                image_url: document.getElementById('foodImage').value
+            };
+
+            try {
+                const url = foodId ? `php/foods_admin.php?action=update&id=${foodId}` : 'php/foods_admin.php?action=create';
+                const method = foodId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(foodId ? 'Food updated successfully!' : 'Food added successfully!');
+                    cancelEdit();
+                    loadAdminFoods(); // Refresh list
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error saving food:', error);
+                alert('Error saving food. Please try again.');
+            }
+        }
+
+        async function deleteFoodAdmin(foodId) {
+            if (!confirm('Are you sure you want to delete this food item?')) return;
+            
+            try {
+                const response = await fetch(`php/foods_admin.php?action=delete&id=${foodId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Food deleted successfully!');
+                    loadAdminFoods(); // Refresh list
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error deleting food:', error);
+                alert('Error deleting food.');
+            }
+        }
+
+        async function updateOrderStatus(orderId, status) {
+            try {
+                const response = await fetch(`php/orders_admin.php?action=updateStatus`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId, status })
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    alert('Error updating status: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Error updating order status.');
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

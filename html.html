@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Ordering System - Home</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="script" href="main.js">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">FoodOrder</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li id="auth-links">
+                    <!-- Will be populated by JavaScript -->
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Delicious Food Delivered to Your Door</h1>
+            <p>Order from the best restaurants in town</p>
+            <a href="#menu" class="btn">View Menu</a>
+        </section>
+
+        <section id="menu" class="menu-section">
+            <h2>Our Menu</h2>
+            <div class="filter-controls">
+                <input type="text" id="searchInput" placeholder="Search food items..." class="search-input">
+                <select id="categoryFilter" class="category-select">
+                    <option value="">All Categories</option>
+                    <option value="Pizza">Pizza</option>
+                    <option value="Burger">Burger</option>
+                    <option value="Salad">Salad</option>
+                    <option value="Sides">Sides</option>
+                    <option value="Dessert">Dessert</option>
+                </select>
+            </div>
+            <div id="foodMenu" class="food-grid">
+                <!-- Food items will be loaded here by JavaScript -->
+            </div>
+        </section>
+
+        <section id="orderCart" class="cart-section" style="display: none;">
+            <h2>Your Order</h2>
+            <div id="cartItems"></div>
+            <div id="cartTotal" class="cart-total"></div>
+            <button id="placeOrderBtn" class="btn">Place Order</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Food Ordering System - University Assignment</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
