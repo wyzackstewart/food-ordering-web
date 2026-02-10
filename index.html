@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodExpress - Order Delicious Food Online</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/000000/restaurant-.png">
+    
+    <!-- Homepage CSS (embedded for immediate use) -->
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #ff6b35;
+            --secondary-color: #f4a261;
+            --dark-color: #264653;
+            --light-color: #f8f9fa;
+            --success-color: #2a9d8f;
+            --danger-color: #e76f51;
+            --text-color: #333;
+            --text-light: #666;
+            --border-color: #ddd;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .main-header {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .logo-highlight {
+            color: var(--primary-color);
+        }
+
+        /* Main Navigation */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        /* User Actions */
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-toggle {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .search-box {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            min-width: 300px;
+        }
+
+        .search-box.active {
+            display: flex;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .cart-btn {
+            position: relative;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 18px;
+            padding: 8px;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Auth Section */
+        .auth-section .logged-out {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-section .logged-in {
+            display: none;
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-top: 10px;
+        }
+
+        .user-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dropdown-item:hover {
+            background: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-large {
+            padding: 15px 30px;
+            font-size: 16px;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Mobile Navigation */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .mobile-nav {
+            display: none;
+            background: white;
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+
+        .mobile-nav.active {
+            display: block;
+            right: 0;
+        }
+
+        .mobile-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mobile-nav-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 20px;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: 15px;
+        }
+
+        .mobile-nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .mobile-nav-links a:hover {
+            background: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .hero-search {
+            margin-bottom: 40px;
+        }
+
+        .search-box-large {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .search-input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .search-input-group i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .search-input-group input {
+            flex: 1;
+            border: none;
+            padding: 20px 0;
+            font-size: 16px;
+            outline: none;
+            width: 100%;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat i {
+            font-size: 24px;
+            opacity: 0.8;
+        }
+
+        .stat h3 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat p {
+            font-size: 14px;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .hero-img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: white;
+            color: var(--dark-color);
+            padding: 10px 15px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .element-1 {
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .element-2 {
+            top: 60%;
+            left: 5%;
+            animation-delay: 1s;
+        }
+
+        .element-3 {
+            bottom: 20%;
+            right: 5%;
+            animation-delay: 2s;
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Categories */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .category-image {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .category-card:hover .category-image img {
+            transform: scale(1.1);
+        }
+
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .category-card:hover .category-overlay {
+            opacity: 1;
+        }
+
+        .category-overlay i {
+            color: white;
+            font-size: 24px;
+        }
+
+        .category-content {
+            padding: 20px;
+        }
+
+        .category-content h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .category-content p {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .item-count {
+            display: inline-block;
+            background: var(--light-color);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Featured Dishes */
+        .section-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            padding: 10px 25px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .tab-btn:hover:not(.active) {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .dish-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .dish-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .dish-image {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dish-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .dish-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .dish-content {
+            padding: 20px;
+        }
+
+        .dish-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .dish-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .dish-category {
+            display: inline-block;
+            background: var(--light-color);
+            color: var(--text-light);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .dish-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .dish-description {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .dish-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dish-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #FFD700;
+        }
+
+        .dish-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        .section-footer {
+            text-align: center;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: var(--light-color);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .step-icon {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--light-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-icon i {
+            font-size: 30px;
+            color: var(--primary-color);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .step h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+
+        .step p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .testimonial-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rating {
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-text {
+            flex: 1;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .customer {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .customer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+
+        .customer-info h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+
+        .customer-info p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--dark-color) 0%, #2c3e50 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cta-content p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Newsletter */
+        .newsletter-section {
+            background: var(--light-color);
+            text-align: center;
+        }
+
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+
+        .newsletter-content p {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .newsletter-form .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* Footer */
+        .main-footer {
+            background: var(--dark-color);
+            color: white;
+            padding-top: 60px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+            color: var(--primary-color);
+        }
+
+        .footer-description {
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .contact-item i {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin-top: 3px;
+        }
+
+        .contact-item strong {
+            display: block;
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .contact-item p {
+            opacity: 0.8;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 0;
+        }
+
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .copyright p {
+            opacity: 0.8;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .academic-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+        }
+
+        .legal-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .legal-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .legal-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-bottom-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .search-box-large {
+                flex-direction: column;
+                border-radius: 8px;
+            }
+
+            .search-input-group {
+                padding: 15px;
+            }
+
+            .search-input-group input {
+                padding: 10px 0;
+            }
+
+            .newsletter-form .form-group {
+                flex-direction: column;
+            }
+
+            .legal-links {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 24px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .categories-grid,
+            .dishes-grid,
+            .steps-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-tabs {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .tab-btn {
+                padding: 8px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <a href="index.html" class="logo">
+                    <img src="https://img.icons8.com/color/96/000000/restaurant-.png" alt="FoodExpress Logo" class="logo-img">
+                    <span class="logo-text">Food<span class="logo-highlight">Express</span></span>
+                </a>
+
+                <!-- Navigation Menu -->
+                <nav class="main-nav">
+                    <ul class="nav-links">
+                        <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="public/menu.html"><i class="fas fa-utensils"></i> Menu</a></li>
+                        <li><a href="public/about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                        <li><a href="public/contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                        <li><a href="public/offers.html"><i class="fas fa-tag"></i> Offers</a></li>
+                    </ul>
+                </nav>
+
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <!-- Search -->
+                    <div class="search-container">
+                        <button class="search-toggle" id="searchToggle">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <div class="search-box" id="searchBox">
+                            <input type="text" placeholder="Search dishes..." id="searchInput">
+                            <button class="search-btn"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Cart -->
+                    <a href="public/cart.html" class="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+
+                    <!-- User Authentication -->
+                    <div class="auth-section" id="authSection">
+                        <!-- Will be filled by JavaScript based on login status -->
+                        <div class="logged-out">
+                            <a href="public/login.html" class="btn btn-outline">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                            <a href="public/register.html" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> Sign Up
+                            </a>
+                        </div>
+                        <div class="logged-in" style="display: none;">
+                            <div class="user-dropdown">
+                                <button class="user-btn">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span class="user-name">Guest</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a href="user/dashboard.html" class="dropdown-item">
+                                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                                    </a>
+                                    <a href="user/profile.html" class="dropdown-item">
+                                        <i class="fas fa-user"></i> My Profile
+                                    </a>
+                                    <a href="user/orders.html" class="dropdown-item">
+                                        <i class="fas fa-receipt"></i> My Orders
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="#" class="dropdown-item" id="logoutBtn">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="logo">
+                <img src="https://img.icons8.com/color/96/000000/restaurant-.png" alt="FoodExpress Logo" class="logo-img">
+                <span>FoodExpress</span>
+            </a>
+            <button class="mobile-nav-close" id="mobileNavClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <ul class="mobile-nav-links">
+            <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="public/menu.html"><i class="fas fa-utensils"></i> Menu</a></li>
+            <li><a href="public/about.html"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="public/contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="public/offers.html"><i class="fas fa-tag"></i> Offers</a></li>
+            <li class="mobile-auth-links">
+                <a href="public/login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="public/register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </li>
+        </ul>
+        
+        <div class="mobile-user-info" id="mobileUserInfo" style="display: none;">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="user-details">
+                <h4>Guest User</h4>
+                <p>Welcome back!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">Delicious Food Delivered to Your Doorstep</h1>
+                        <p class="hero-subtitle">Order from 100+ restaurants in your area. Fast delivery, fresh meals, and great prices!</p>
+                        
+                        <div class="hero-search">
+                            <div class="search-box-large">
+                                <div class="search-input-group">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <input type="text" placeholder="Enter your delivery address" id="deliveryAddress">
+                                </div>
+                                <button class="btn btn-primary" id="findFoodBtn">
+                                    <i class="fas fa-search"></i> Find Food
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="hero-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <div>
+                                    <h3>10,000+</h3>
+                                    <p>Happy Customers</p>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-store"></i>
+                                <div>
+                                    <h3>100+</h3>
+                                    <p>Restaurants</p>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-shipping-fast"></i>
+                                <div>
+                                    <h3>30 min</h3>
+                                    <p>Average Delivery</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-image">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="Delicious Food" class="hero-img">
+                        <div class="floating-elements">
+                            <div class="floating-element element-1">
+                                <i class="fas fa-star"></i>
+                                <span>4.8 Rating</span>
+                            </div>
+                            <div class="floating-element element-2">
+                                <i class="fas fa-clock"></i>
+                                <span>Fast Delivery</span>
+                            </div>
+                            <div class="floating-element element-3">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Safe & Secure</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Popular Categories</h2>
+                    <a href="public/menu.html" class="btn-view-all">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="categories-grid">
+                    <!-- Category 1: Pizza -->
+                    <div class="category-card" onclick="window.location.href='public/menu.html?category=pizza'">
+                        <div class="category-image">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Pizza">
+                            <div class="category-overlay">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3>Pizza</h3>
+                            <p>Freshly baked pizzas with various toppings</p>
+                            <span class="item-count">45 items</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 2: Burgers -->
+                    <div class="category-card" onclick="window.location.href='public/menu.html?category=burgers'">
+                        <div class="category-image">
+                            <img src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Burgers">
+                            <div class="category-overlay">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3>Burgers</h3>
+                            <p>Juicy burgers with premium ingredients</p>
+                            <span class="item-count">32 items</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 3: Pasta -->
+                    <div class="category-card" onclick="window.location.href='public/menu.html?category=pasta'">
+                        <div class="category-image">
+                            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Pasta">
+                            <div class="category-overlay">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3>Pasta</h3>
+                            <p>Italian pasta dishes with authentic sauces</p>
+                            <span class="item-count">36 items</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 4: Sushi -->
+                    <div class="category-card" onclick="window.location.href='public/menu.html?category=sushi'">
+                        <div class="category-image">
+                            <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Sushi">
+                            <div class="category-overlay">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3>Sushi</h3>
+                            <p>Fresh sushi and Japanese cuisine</p>
+                            <span class="item-count">28 items</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 5: Desserts -->
+                    <div class="category-card" onclick="window.location.href='public/menu.html?category=desserts'">
+                        <div class="category-image">
+                            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Desserts">
+                            <div class="category-overlay">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3>Desserts</h3>
+                            <p>Sweet treats and baked goods</p>
+                            <span class="item-count">52 items</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 6: Beverages -->
+                    <div class="category-card" onclick="window.location.href='public/menu.html?category=beverages'">
+                        <div class="category-image">
+                            <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Beverages">
+                            <div class="category-overlay">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <h3>Beverages</h3>
+                            <p>Refreshing drinks and cocktails</p>
+                            <span class="item-count">41 items</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Dishes -->
+        <section class="featured-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Today's Specials</h2>
+                    <div class="section-tabs">
+                        <button class="tab-btn active" data-category="all">All</button>
+                        <button class="tab-btn" data-category="pizza">Pizza</button>
+                        <button class="tab-btn" data-category="burger">Burger</button>
+                        <button class="tab-btn" data-category="pasta">Pasta</button>
+                        <button class="tab-btn" data-category="dessert">Dessert</button>
+                    </div>
+                </div>
+                
+                <div class="dishes-grid" id="dishesGrid">
+                    <!-- Dish 1: Pizza -->
+                    <div class="dish-card" data-category="pizza" data-id="1">
+                        <div class="dish-image">
+                            <img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Margherita Pizza">
+                            <span class="dish-badge">Popular</span>
+                        </div>
+                        <div class="dish-content">
+                            <div class="dish-header">
+                                <div>
+                                    <h3>Margherita Pizza</h3>
+                                    <span class="dish-category">Pizza</span>
+                                </div>
+                                <div class="dish-price">$12.99</div>
+                            </div>
+                            <p class="dish-description">Classic pizza with tomato sauce, fresh mozzarella, and basil leaves.</p>
+                            <div class="dish-footer">
+                                <div class="dish-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.8</span>
+                                </div>
+                                <div class="dish-actions">
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn minus">-</button>
+                                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                                        <button class="quantity-btn plus">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-add-cart">
+                                        <i class="fas fa-cart-plus"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dish 2: Burger -->
+                    <div class="dish-card" data-category="burger" data-id="2">
+                        <div class="dish-image">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Double Cheeseburger">
+                            <span class="dish-badge">Chef's Choice</span>
+                        </div>
+                        <div class="dish-content">
+                            <div class="dish-header">
+                                <div>
+                                    <h3>Double Cheeseburger</h3>
+                                    <span class="dish-category">Burger</span>
+                                </div>
+                                <div class="dish-price">$9.99</div>
+                            </div>
+                            <p class="dish-description">Juicy beef patty with double cheese, lettuce, and special sauce.</p>
+                            <div class="dish-footer">
+                                <div class="dish-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.5</span>
+                                </div>
+                                <div class="dish-actions">
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn minus">-</button>
+                                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                                        <button class="quantity-btn plus">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-add-cart">
+                                        <i class="fas fa-cart-plus"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dish 3: Pasta -->
+                    <div class="dish-card" data-category="pasta" data-id="3">
+                        <div class="dish-image">
+                            <img src="https://images.unsplash.com/photo-1598866594230-a7c12756260f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Spaghetti Carbonara">
+                        </div>
+                        <div class="dish-content">
+                            <div class="dish-header">
+                                <div>
+                                    <h3>Spaghetti Carbonara</h3>
+                                    <span class="dish-category">Pasta</span>
+                                </div>
+                                <div class="dish-price">$14.99</div>
+                            </div>
+                            <p class="dish-description">Traditional Italian pasta with eggs, cheese, pancetta, and black pepper.</p>
+                            <div class="dish-footer">
+                                <div class="dish-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.7</span>
+                                </div>
+                                <div class="dish-actions">
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn minus">-</button>
+                                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                                        <button class="quantity-btn plus">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-add-cart">
+                                        <i class="fas fa-cart-plus"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dish 4: Sushi -->
+                    <div class="dish-card" data-category="sushi" data-id="4">
+                        <div class="dish-image">
+                            <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="California Roll">
+                            <span class="dish-badge">Fresh</span>
+                        </div>
+                        <div class="dish-content">
+                            <div class="dish-header">
+                                <div>
+                                    <h3>California Roll</h3>
+                                    <span class="dish-category">Sushi</span>
+                                </div>
+                                <div class="dish-price">$8.99</div>
+                            </div>
+                            <p class="dish-description">Crab, avocado, and cucumber wrapped in seaweed and rice.</p>
+                            <div class="dish-footer">
+                                <div class="dish-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.6</span>
+                                </div>
+                                <div class="dish-actions">
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn minus">-</button>
+                                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                                        <button class="quantity-btn plus">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-add-cart">
+                                        <i class="fas fa-cart-plus"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-footer">
+                    <a href="public/menu.html" class="btn btn-primary btn-large">
+                        <i class="fas fa-utensils"></i> View Full Menu
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-subtitle">Get your favorite food in 4 simple steps</p>
+                </div>
+                
+                <div class="steps-grid">
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-search"></i>
+                            <div class="step-number">1</div>
+                        </div>
+                        <h3>Browse Menu</h3>
+                        <p>Choose from hundreds of delicious dishes from local restaurants.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <div class="step-number">2</div>
+                        </div>
+                        <h3>Add to Cart</h3>
+                        <p>Select your favorite items and customize your order as needed.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-credit-card"></i>
+                            <div class="step-number">3</div>
+                        </div>
+                        <h3>Checkout</h3>
+                        <p>Securely pay online with multiple payment options available.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                            <div class="step-number">4</div>
+                        </div>
+                        <h3>Enjoy Your Meal</h3>
+                        <p>Track your order in real-time and enjoy fresh, hot delivery.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">What Our Customers Say</h2>
+                    <p class="section-subtitle">Rated 4.8/5 by thousands of satisfied customers</p>
+                </div>
+                
+                <div class="testimonials-grid">
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="testimonial-text">"The best food delivery service I've used! The food always arrives hot and fresh. Highly recommended!"</p>
+                            <div class="customer">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Sarah Johnson" class="customer-avatar">
+                                <div class="customer-info">
+                                    <h4>Sarah Johnson</h4>
+                                    <p>Regular Customer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="testimonial-text">"Great variety of restaurants and fast delivery. The app is easy to use and the customer service is excellent."</p>
+                            <div class="customer">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Michael Chen" class="customer-avatar">
+                                <div class="customer-info">
+                                    <h4>Michael Chen</h4>
+                                    <p>Food Blogger</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="testimonial-text">"Perfect for busy days when I don't have time to cook. The food quality is always excellent!"</p>
+                            <div class="customer">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Emily Rodriguez" class="customer-avatar">
+                                <div class="customer-info">
+                                    <h4>Emily Rodriguez</h4>
+                                    <p>Working Professional</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Order Your Favorite Food?</h2>
+                    <p>Join thousands of satisfied customers enjoying delicious meals delivered to their doorstep.</p>
+                    <div class="cta-buttons">
+                        <a href="public/menu.html" class="btn btn-primary btn-large">
+                            <i class="fas fa-utensils"></i> Order Now
+                        </a>
+                        <a href="public/register.html" class="btn btn-outline btn-large">
+                            <i class="fas fa-user-plus"></i> Sign Up Free
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="newsletter-section">
+            <div class="container">
+                <div class="newsletter-content">
+                    <h2>Stay Updated</h2>
+                    <p>Subscribe to our newsletter for exclusive deals and new restaurant updates.</p>
+                    
+                    <form class="newsletter-form" id="newsletterForm">
+                        <div class="form-group">
+                            <input type="email" placeholder="Enter your email address" required>
+                            <button type="submit" class="btn btn-primary">
+                                Subscribe <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <p class="form-note">
+                            <i class="fas fa-lock"></i>
+                            We respect your privacy. Unsubscribe at any time.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info -->
+                <div class="footer-section">
+                    <a href="index.html" class="footer-logo">
+                        <img src="https://img.icons8.com/color/96/000000/restaurant-.png" alt="FoodExpress Logo" class="logo-img">
+                        <span>Food<span>Express</span></span>
+                    </a>
+                    <p class="footer-description">
+                        Delivering delicious meals since 2024. Your satisfaction is our top priority.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="public/menu.html">Menu</a></li>
+                        <li><a href="public/about.html">About Us</a></li>
+                        <li><a href="public/contact.html">Contact</a></li>
+                        <li><a href="public/offers.html">Special Offers</a></li>
+                        <li><a href="public/faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Categories -->
+                <div class="footer-section">
+                    <h3>Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="public/menu.html?category=pizza">Pizza</a></li>
+                        <li><a href="public/menu.html?category=burgers">Burgers</a></li>
+                        <li><a href="public/menu.html?category=pasta">Pasta</a></li>
+                        <li><a href="public/menu.html?category=sushi">Sushi</a></li>
+                        <li><a href="public/menu.html?category=desserts">Desserts</a></li>
+                        <li><a href="public/menu.html?category=beverages">Beverages</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>Address</strong>
+                                <p>123 Food Street, City, Country</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <strong>Phone</strong>
+                                <p>+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <strong>Email</strong>
+                                <p>support@foodexpress.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <strong>Hours</strong>
+                                <p>24/7 Delivery Service</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <div class="copyright">
+                        <p>&copy; 2024 FoodExpress. All rights reserved. | Academic Project - University Submission</p>
+                        <div class="academic-note">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>This website is developed as part of academic coursework.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="legal-links">
+                        <a href="public/terms.html">Terms of Service</a>
+                        <a href="public/privacy.html">Privacy Policy</a>
+                        <a href="public/cookies.html">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check login status
+        checkLoginStatus();
+        
+        // Initialize cart
+        updateCartCount();
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Initialize dish filtering
+        initDishFiltering();
+    });
+
+    // Check if user is logged in
+    function checkLoginStatus() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const userName = localStorage.getItem('userName') || 'Guest';
+        const userRole = localStorage.getItem('userRole') || 'user';
+        
+        if (isLoggedIn) {
+            // Show logged in state
+            document.querySelector('.logged-out').style.display = 'none';
+            document.querySelector('.logged-in').style.display = 'block';
+            document.querySelector('.user-name').textContent = userName;
+            
+            // Update mobile view
+            const mobileUserInfo = document.getElementById('mobileUserInfo');
+            const mobileAuthLinks = document.querySelector('.mobile-auth-links');
+            
+            if (mobileUserInfo) {
+                mobileUserInfo.style.display = 'flex';
+                mobileUserInfo.querySelector('h4').textContent = userName;
+            }
+            
+            if (mobileAuthLinks) {
+                mobileAuthLinks.style.display = 'none';
+            }
+            
+            // Show admin link if admin
+            if (userRole === 'admin') {
+                const dropdownMenu = document.querySelector('.dropdown-menu');
+                if (dropdownMenu) {
+                    const adminLink = `<a href="admin/index.html" class="dropdown-item">
+                        <i class="fas fa-cog"></i> Admin Panel
+                    </a>`;
+                    dropdownMenu.insertAdjacentHTML('beforeend', adminLink);
+                }
+            }
+        } else {
+            // Show logged out state
+            document.querySelector('.logged-out').style.display = 'flex';
+            document.querySelector('.logged-in').style.display = 'none';
+        }
+    }
+
+    // Update cart count from localStorage
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+        
+        const cartCountElements = document.querySelectorAll('.cart-count');
+        cartCountElements.forEach(element => {
+            element.textContent = totalItems;
+        });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Search toggle
+        const searchToggle = document.getElementById('searchToggle');
+        const searchBox = document.getElementById('searchBox');
+        
+        if (searchToggle && searchBox) {
+            searchToggle.addEventListener('click', function() {
+                searchBox.classList.toggle('active');
+                if (searchBox.classList.contains('active')) {
+                    document.getElementById('searchInput').focus();
+                }
+            });
+        }
+        
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileNav = document.getElementById('mobileNav');
+        const mobileNavClose = document.getElementById('mobileNavClose');
+        
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function() {
+                mobileNav.classList.add('active');
+            });
+        }
+        
+        if (mobileNavClose) {
+            mobileNavClose.addEventListener('click', function() {
+                mobileNav.classList.remove('active');
+            });
+        }
+        
+        // Logout button
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('userId');
+                window.location.href = 'index.html';
+            });
+        }
+        
+        // Find food button
+        const findFoodBtn = document.getElementById('findFoodBtn');
+        if (findFoodBtn) {
+            findFoodBtn.addEventListener('click', function() {
+                const address = document.getElementById('deliveryAddress').value;
+                if (address.trim()) {
+                    window.location.href = 'public/menu.html';
+                } else {
+                    alert('Please enter your delivery address');
+                }
+            });
+        }
+        
+        // Newsletter form
+        const newsletterForm = document.getElementById('newsletterForm');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                if (email) {
+                    alert('Thank you for subscribing to our newsletter!');
+                    this.reset();
+                }
+            });
+        }
+        
+        // Add to cart buttons
+        document.querySelectorAll('.btn-add-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const dishCard = this.closest('.dish-card');
+                const dishId = dishCard.getAttribute('data-id');
+                const dishName = dishCard.querySelector('h3').textContent;
+                const dishPrice = parseFloat(dishCard.querySelector('.dish-price').textContent.replace('$', ''));
+                const quantity = parseInt(dishCard.querySelector('.quantity-input').value);
+                
+                addToCart(dishId, dishName, dishPrice, quantity);
+            });
+        });
+        
+        // Quantity controls
+        document.querySelectorAll('.quantity-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('.quantity-input');
+                let value = parseInt(input.value);
+                
+                if (this.classList.contains('minus')) {
+                    value = Math.max(1, value - 1);
+                } else {
+                    value = Math.min(10, value + 1);
+                }
+                
+                input.value = value;
+            });
+        });
+    }
+
+    // Initialize dish filtering
+    function initDishFiltering() {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const dishes = document.querySelectorAll('.dish-card');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active tab
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Get selected category
+                const category = this.getAttribute('data-category');
+                
+                // Filter dishes
+                dishes.forEach(dish => {
+                    if (category === 'all' || dish.getAttribute('data-category') === category) {
+                        dish.style.display = 'block';
+                    } else {
+                        dish.style.display = 'none';
+                    }
+                });
+            });
+        });
+    }
+
+    // Add item to cart
+    function addToCart(dishId, name, price, quantity) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Check if item already exists in cart
+        const existingItemIndex = cart.findIndex(item => item.id === dishId);
+        
+        if (existingItemIndex !== -1) {
+            // Update quantity if item exists
+            cart[existingItemIndex].quantity += quantity;
+        } else {
+            // Add new item to cart
+            cart.push({
+                id: dishId,
+                name: name,
+                price: price,
+                quantity: quantity,
+                image: `https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80`
+            });
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+        
+        // Update cart count
+        updateCartCount();
+        
+        // Show notification
+        showNotification(`${name} added to cart!`, 'success');
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+        // Remove existing notifications
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+            <span>${message}</span>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        // Add styles
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : '#2196F3'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        // Add close button event
+        notification.querySelector('.notification-close').addEventListener('click', function() {
+            notification.remove();
+        });
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 5000);
+    }
+    </script>
+</body>
+</html>
